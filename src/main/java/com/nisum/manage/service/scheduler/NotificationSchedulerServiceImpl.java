@@ -4,6 +4,7 @@ import com.nisum.manage.persistence.ArriveStatus;
 import com.nisum.manage.service.ArriveStatusServices;
 import com.nisum.manage.util.EmailUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.Date;
@@ -16,6 +17,12 @@ import java.util.logging.Logger;
 public class NotificationSchedulerServiceImpl implements NotificationSchedulerService {
 
     private static Logger logger= Logger.getLogger(NotificationSchedulerServiceImpl.class.toString());
+
+    @Value("${mail.notification.sender}")
+    private String senderEmail;
+
+    @Value("${mail.message}")
+    private String messageToSend;
 
     @Autowired
     private EmailUtils emailUtils;
@@ -37,7 +44,8 @@ public class NotificationSchedulerServiceImpl implements NotificationSchedulerSe
             if(basicDBObjects==null || basicDBObjects.size()==0 )
                    return;
 
-            emailUtils.sendMail("donotreply-saschile@nisum.com",recipientList(basicDBObjects),"Please do not be late!","<h1>Please do not be late, it will be deducted from your paycheck! :)</h1>");
+
+        emailUtils.sendMail(senderEmail,recipientList(basicDBObjects),"Please do not be late!",messageToSend);
 
     }
 
